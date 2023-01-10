@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="KnockFFA:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/KnockFFA_jar</output-path>
+    <root id="archive" name="KnockFFA.jar">
+      <element id="module-output" name="KnockFFA" />
+      <element id="directory" name="webserver">
+        <element id="dir-copy" path="$PROJECT_DIR$/output" />
+      </element>
+    </root>
+  </artifact>
+</component>
