@@ -3,7 +3,10 @@ package de.kevin.knockffa.commands;
 import de.kevin.knockffa.KnockFFA;
 import de.kevin.knockffa.MapHandler;
 import de.kevin.knockffa.Utils;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +36,7 @@ public class MapCommand implements CommandExecutor {
             Utils.sendMessage(p, false, "§eMaps laden: /map load");
             Utils.sendMessage(p, false, "§eErstellen: /map create <name>");
             Utils.sendMessage(p, false, "§eMap Setup: /map setup <map>");
-            Utils.sendMessage(p, false, "§eMap Setup: /map set <death|safe|spawn|mapname> [mapname]");
+            Utils.sendMessage(p, false, "§eMap Einstellungen: /map set <death|safe|spawn|mapname|finished> [mapname]");
 
             return true;
         }
@@ -82,6 +85,17 @@ public class MapCommand implements CommandExecutor {
         }
 
         if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("teleport")) {
+                try {
+                    Utils.sendTitle(p, "§eTeleportiere...", 20, 20*3, 20*3);
+                    WorldCreator creator = new WorldCreator(args[1]);
+                    World w = Bukkit.createWorld(creator);
+                    p.teleport(w.getSpawnLocation());
+                } catch (NullPointerException ignored) {
+                }
+            }
+
+
             if (args[0].equalsIgnoreCase("create")) {
                 if (!mapExists(args[1])) {
                     addMap(args[1]);

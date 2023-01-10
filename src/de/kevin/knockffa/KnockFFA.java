@@ -6,6 +6,7 @@ import de.kevin.knockffa.commands.TitleCommand;
 import de.kevin.knockffa.commands.Top10Command;
 import de.kevin.knockffa.database.Database;
 import de.kevin.knockffa.inventory.CommandsInventoryHandler;
+import de.kevin.knockffa.inventory.KitInventoryHandler;
 import de.kevin.knockffa.inventory.StartInventoryHandler;
 import de.kevin.knockffa.events.Leave;
 import de.kevin.knockffa.events.RegisterUser;
@@ -13,11 +14,14 @@ import de.kevin.knockffa.inventory.Top10InventoryHandler;
 import de.kevin.knockffa.webserver.KnockFFAWebserver;
 import de.kevin.websocket.ServerSocketThread;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * The type Knock ffa.
@@ -72,9 +76,13 @@ public final class KnockFFA extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new RegisterUser(this), this);
         getServer().getPluginManager().registerEvents(new Leave(this), this);
+        // Inventare
         getServer().getPluginManager().registerEvents(new StartInventoryHandler(), this);
         getServer().getPluginManager().registerEvents(new CommandsInventoryHandler(this), this);
         getServer().getPluginManager().registerEvents(new Top10InventoryHandler(this), this);
+        getServer().getPluginManager().registerEvents(new KitInventoryHandler(this), this);
+
+        getServer().getPluginManager().registerEvents(new MapHandler.MapSetter(), this);
         command("top10", "", new Top10Command(this));
         command("title", "<text...>", new TitleCommand());
         command("knockffa", "", new FFACommand());
@@ -94,6 +102,12 @@ public final class KnockFFA extends JavaPlugin {
         }, 5);
 
         MapCommand.loadMaps(this);
+        MapHandler.MapSetter.activeMap = MapCommand.maps.stream().findFirst().orElse(null);
+
+        for (MapHandler map : MapCommand.maps) {
+            WorldCreator creator = new WorldCreator(map.getSpawn().getWorld().getName());
+            Bukkit.createWorld(creator);
+        }
 
         Logging.info("Das Plugin wurde aktiviert.");
     }

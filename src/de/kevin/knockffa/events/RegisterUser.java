@@ -29,11 +29,7 @@ public class RegisterUser implements Listener {
             Utils.sendMessage(p, true, "§6Du wurdest in der Datenbank registriert.");
         }
         Utils.sendTitle(p, KnockFFA.getPrefix().substring(0, KnockFFA.getPrefix().length() - 3).trim(), "Herzlich Willkommen", 30, 40, 30);
-    }
 
-    @EventHandler
-    public void doSmth(AsyncPlayerPreLoginEvent e) {
-        db.update("ggfg;");
     }
 
 }

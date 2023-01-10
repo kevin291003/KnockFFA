@@ -5,6 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,7 +118,6 @@ public class MapHandler {
             deathzone = (double) configuration.get("deathzone");
         if (configuration.contains("mapname"))
             mapName = (String) configuration.get("mapname");
-        // TODO: LAST SEEN
         return this;
     }
 
@@ -144,6 +146,7 @@ public class MapHandler {
             configuration.set("spawn.yaw", loc.getYaw());
             configuration.set("spawn.pitch", loc.getPitch());
             configuration.set("spawn.world", loc.getWorld().getName());
+            loc.getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
         return this;
     }
@@ -174,5 +177,17 @@ public class MapHandler {
             configuration.set("finished", finished);
         }
         return this;
+    }
+
+    public static class MapSetter implements Listener {
+        public static MapHandler activeMap;
+
+        @EventHandler
+        public void onJoin(PlayerSpawnLocationEvent e) {
+            try {
+                e.setSpawnLocation(activeMap.getSpawn());
+            } catch (NullPointerException ignored) {
+            }
+        }
     }
 }
