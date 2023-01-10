@@ -1,0 +1,41 @@
+<style>
+    tr > th:first-child {
+        width: 20%;
+    }
+    tr > th:not(:first-child) {
+        width: 40%;
+    }
+    tbody tr:hover {
+        cursor: pointer;
+    }
+</style>
+<div class="container">
+    <form>
+      <h3 class="text-center">Spieler suchen</h3>
+      <input type="hidden" name="show" value="user">
+      <div class="mb-3">
+        <label for="uuid" class="form-label">UUID des Spielers</label>
+        <input type="search" class="form-control" id="uuid" name="uuid" value="">
+      </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">Spieler</label>
+        <input type="search" class="form-control" id="name" name="name" value="">
+      </div>
+      <button type="submit" class="btn btn-primary">Suche Spieler</button>
+    </form>
+  </div>
+<br>
+<div class="container text-center">
+    <table class="table table-responsive table-primary table-hover table-striped align-middle">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Spieler</th>
+                <th>Punkte</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {TABLEROWS_USERS}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,26 @@
+<style>
+    tr > th {
+        width: 40%;
+    }
+    tr > th:first-child, tr > th:nth-child(2) {
+        width: 10%;
+    }
+    tbody tr:hover {
+        cursor: pointer;
+    }
+</style>
+<div class="container text-center">
+    <table class="table table-primary table-hover table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Platz</th>
+                <th></th>
+                <th>Spieler</th>
+                <th>Punkte</th>
+            </tr>
+        </thead>
+        <tbody>
+            {TABLEROWS_USERS}
+        </tbody>
+    </table>
+</div>

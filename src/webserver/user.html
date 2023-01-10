@@ -1,0 +1,28 @@
+<style>
+#stats {
+    font-size: 2rem;
+    display: grid;
+    padding: 2rem;
+}
+
+#stats > p {
+    align-self: center;
+}
+</style>
+<br>
+<div class="container">
+    <div class="row text-center">
+        <h1><strong>{USER_USERNAME}</strong></h1>
+    </div>
+    <div class="row">
+        <div class="col text-center">
+            <img src="https://mc-heads.net/body/{USER_UUID}">
+        </div>
+        <div id="stats" class="col">
+            <p>Kills: {KILLS}</p>
+            <p>Tode: {DEATHS}</p>
+            <p>Punkte: {SCORE}</p>
+            <p>Coins: {COINS}</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+name: 'KnockFFA'
+version: '1.0'
+main: 'de.kevin.knockffa.KnockFFA'
+prefix: 'KnockFFA'
+author: 'Kevin'
+description: 'Es ist ein FFA Spiel, in dem es darum geht, andere Spieler von der Map zu schubsen.'
+
+commands:
+  top10:
+  title:
+  knockffa:
+  map:
+
+permissions:
+  knockffa.preset.user:
+    description: 'Standard user permissions'
+    children:
+      knockffa.command.top10: false
+      knockffa.command.knockffa: false
+  knockffa.command.top10:
+    description: 'Use the command /top10'
+  knockffa.command.title:
+    description: 'Use the command /title'
+  knockffa.command.knockffa:
+    description: 'Use the command /knockffa'
