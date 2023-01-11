@@ -5,6 +5,7 @@ import de.kevin.knockffa.commands.MapCommand;
 import de.kevin.knockffa.commands.TitleCommand;
 import de.kevin.knockffa.commands.Top10Command;
 import de.kevin.knockffa.database.Database;
+import de.kevin.knockffa.events.GamePlayEvents;
 import de.kevin.knockffa.inventory.CommandsInventoryHandler;
 import de.kevin.knockffa.inventory.KitInventoryHandler;
 import de.kevin.knockffa.inventory.StartInventoryHandler;
@@ -76,6 +77,7 @@ public final class KnockFFA extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new RegisterUser(this), this);
         getServer().getPluginManager().registerEvents(new Leave(this), this);
+        getServer().getPluginManager().registerEvents(new GamePlayEvents(this), this);
         // Inventare
         getServer().getPluginManager().registerEvents(new StartInventoryHandler(), this);
         getServer().getPluginManager().registerEvents(new CommandsInventoryHandler(this), this);
@@ -105,8 +107,7 @@ public final class KnockFFA extends JavaPlugin {
         MapHandler.MapSetter.activeMap = MapCommand.maps.stream().findFirst().orElse(null);
 
         for (MapHandler map : MapCommand.maps) {
-            WorldCreator creator = new WorldCreator(map.getSpawn().getWorld().getName());
-            Bukkit.createWorld(creator);
+            System.out.println(map.toString());
         }
 
         Logging.info("Das Plugin wurde aktiviert.");

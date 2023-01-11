@@ -147,4 +147,13 @@ public class Database {
         return s;
     }
 
+    public boolean hasKit(OfflinePlayer offlinePlayer, String kit) {
+        try {
+            return getResult("SELECT kits FROM scores WHERE uuid='" + offlinePlayer.getUniqueId().toString() + "';").getString("kits").contains(kit + ";");
+        } catch (SQLException e) {
+            Logging.error("Database: Could not execute query.");
+            return false;
+        }
+    }
+
 }

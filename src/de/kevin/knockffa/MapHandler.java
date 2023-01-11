@@ -2,6 +2,7 @@ package de.kevin.knockffa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,6 +37,10 @@ public class MapHandler {
 
     public String getMapName() {
         return mapName;
+    }
+
+    public String getWorldString() {
+        return (String) configuration.get("spawn.world");
     }
 
     private final String map;
@@ -104,14 +109,17 @@ public class MapHandler {
 
     public MapHandler loadAll() {
         load();
-        if (configuration.contains("spawn"))
+        if (configuration.contains("spawn")) {
+            WorldCreator creator = new WorldCreator((String) configuration.get("spawn.world"));
+            Bukkit.createWorld(creator);
             spawn = new Location(
-                Bukkit.getWorld((String) configuration.get("spawn.world")),
-                (double) configuration.get("spawn.x"),
-                (double) configuration.get("spawn.y"),
-                (double) configuration.get("spawn.z"),
-                Float.parseFloat(configuration.get("spawn.yaw").toString()),
-                Float.parseFloat(configuration.get("spawn.pitch").toString()));
+                    Bukkit.getWorld((String) configuration.get("spawn.world")),
+                    (double) configuration.get("spawn.x"),
+                    (double) configuration.get("spawn.y"),
+                    (double) configuration.get("spawn.z"),
+                    Float.parseFloat(configuration.get("spawn.yaw").toString()),
+                    Float.parseFloat(configuration.get("spawn.pitch").toString()));
+        }
         if (configuration.contains("safezone"))
             safezone = (double) configuration.get("safezone");
         if (configuration.contains("deathzone"))
@@ -189,5 +197,12 @@ public class MapHandler {
             } catch (NullPointerException ignored) {
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        str = "Map: " + this.hashCode() + ", File: " + mapFile.getName() + ", Spawn: " + spawn.toString();
+        return str;
     }
 }

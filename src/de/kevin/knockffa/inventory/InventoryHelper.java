@@ -6,10 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.UUID;
@@ -17,7 +19,10 @@ import java.util.UUID;
 public class InventoryHelper {
 
     public static Inventory createInventory(String name, int lines, boolean prefilled) {
-        Inventory inventory = Bukkit.createInventory(null, 9 * lines, name);
+        return createInventory(null, name, lines, prefilled);
+    }
+    public static Inventory createInventory(InventoryHolder holder, String name, int lines, boolean prefilled) {
+        Inventory inventory = Bukkit.createInventory(holder, 9 * lines, name);
         if (prefilled) {
             ItemStack[] itemStacks = new ItemStack[lines * 9];
             for (int i = 0; i < lines * 9; i++)

@@ -55,7 +55,7 @@ public class StartInventoryHandler implements Listener {
             return;
         }
         if (item.equals(CHOICE_KITS)) {
-            p.openInventory(KitInventoryHandler.createInventory());
+            p.openInventory(KitInventoryHandler.createInventory(p));
             return;
         }
         // TODO: Handle other clicks

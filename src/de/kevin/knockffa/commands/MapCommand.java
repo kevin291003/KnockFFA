@@ -34,6 +34,7 @@ public class MapCommand implements CommandExecutor {
         if (args.length == 0) {
             Utils.sendMessage(p, false, "§eAuflisten: /map list");
             Utils.sendMessage(p, false, "§eMaps laden: /map load");
+            Utils.sendMessage(p, false, "§eZu Map teleportieren: /map teleport <map>");
             Utils.sendMessage(p, false, "§eErstellen: /map create <name>");
             Utils.sendMessage(p, false, "§eMap Setup: /map setup <map>");
             Utils.sendMessage(p, false, "§eMap Einstellungen: /map set <death|safe|spawn|mapname|finished> [mapname]");
