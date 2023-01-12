@@ -112,12 +112,18 @@ public class KitInventoryHandler implements Listener {
         return new String[]{"§a", "§aWähle diese Klasse."};
     }
 
-    public void setKit(Player p, String kit) {
+    public static void setKit(Player p, String kit) {
         p.setMetadata("active_kit", new FixedMetadataValue(knockFFA, kit));
+    }
+
+    public void getKit(Player p) {
+        String kit = p.getMetadata("active_kit").get(0).asString();
+        Utils.broadcast(true, kit);
     }
 
     @EventHandler
     public void onSpawn(PlayerRespawnEvent e) {
+        getKit(e.getPlayer());
         KIT_STANDARD(e.getPlayer());
     }
 

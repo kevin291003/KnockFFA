@@ -1,9 +1,10 @@
 package de.kevin.knockffa;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -34,11 +35,10 @@ public class Utils {
     }
 
     public static void broadcast(boolean prefix, String permission, String message) {
-        message = (prefix ? KnockFFA.getPrefix() : "") + message;
         if (permission != null)
-            Bukkit.broadcast(message, permission);
+            Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission(permission)).forEach(player -> Utils.sendMessage(player, prefix, message));
         else
-            Bukkit.broadcastMessage(message);
+            Bukkit.getOnlinePlayers().forEach(player -> Utils.sendMessage(player, prefix, message));
     }
 
     public static void sendTitle(Player p, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
@@ -70,5 +70,11 @@ public class Utils {
             return false;
         } else
             return true;
+    }
+
+    public static void sendVoteCommand(MapHandler mapHandler) {
+        TextComponent component = new TextComponent(TextComponent.fromLegacyText("§9- " + mapHandler.getMapName()));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mapvote " + mapHandler.getMapName()));
+        Bukkit.getOnlinePlayers().forEach(player -> player.spigot().sendMessage(component));
     }
 }

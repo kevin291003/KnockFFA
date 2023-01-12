@@ -10,6 +10,7 @@ commands:
   title:
   knockffa:
   map:
+  mapvote:
 
 permissions:
   knockffa.preset.user:

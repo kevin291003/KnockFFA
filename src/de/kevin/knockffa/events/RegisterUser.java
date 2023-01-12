@@ -3,11 +3,10 @@ package de.kevin.knockffa.events;
 import de.kevin.knockffa.KnockFFA;
 import de.kevin.knockffa.Utils;
 import de.kevin.knockffa.database.Database;
-import org.bukkit.Bukkit;
+import de.kevin.knockffa.inventory.KitInventoryHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class RegisterUser implements Listener {
@@ -29,7 +28,7 @@ public class RegisterUser implements Listener {
             Utils.sendMessage(p, true, "§6Du wurdest in der Datenbank registriert.");
         }
         Utils.sendTitle(p, KnockFFA.getPrefix().substring(0, KnockFFA.getPrefix().length() - 3).trim(), "Herzlich Willkommen", 30, 40, 30);
-
+        KitInventoryHandler.setKit(p, "Standard");
     }
 
 }

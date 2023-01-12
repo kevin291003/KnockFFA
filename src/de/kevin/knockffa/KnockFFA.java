@@ -1,33 +1,30 @@
 package de.kevin.knockffa;
 
-import de.kevin.knockffa.commands.FFACommand;
-import de.kevin.knockffa.commands.MapCommand;
-import de.kevin.knockffa.commands.TitleCommand;
-import de.kevin.knockffa.commands.Top10Command;
+import de.kevin.knockffa.commands.*;
 import de.kevin.knockffa.database.Database;
 import de.kevin.knockffa.events.GamePlayEvents;
+import de.kevin.knockffa.events.Leave;
+import de.kevin.knockffa.events.RegisterUser;
 import de.kevin.knockffa.inventory.CommandsInventoryHandler;
 import de.kevin.knockffa.inventory.KitInventoryHandler;
 import de.kevin.knockffa.inventory.StartInventoryHandler;
-import de.kevin.knockffa.events.Leave;
-import de.kevin.knockffa.events.RegisterUser;
 import de.kevin.knockffa.inventory.Top10InventoryHandler;
 import de.kevin.knockffa.webserver.KnockFFAWebserver;
 import de.kevin.websocket.ServerSocketThread;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * The type Knock ffa.
  */
 public final class KnockFFA extends JavaPlugin {
+
+    public boolean gameplay = false;
 
     /**
      * Use this to get the main class
@@ -89,6 +86,7 @@ public final class KnockFFA extends JavaPlugin {
         command("title", "<text...>", new TitleCommand());
         command("knockffa", "", new FFACommand());
         command("map", "", new MapCommand(knockFFA));
+        command("mapvote", "<map name>", new MapVoteCommand());
 
 
         Logging.info("Starte Webserver...");
@@ -103,12 +101,7 @@ public final class KnockFFA extends JavaPlugin {
             }
         }, 5);
 
-        MapCommand.loadMaps(this);
-        MapHandler.MapSetter.activeMap = MapCommand.maps.stream().findFirst().orElse(null);
-
-        for (MapHandler map : MapCommand.maps) {
-            System.out.println(map.toString());
-        }
+        MapHandler.MapSetter.initialize(this);
 
         Logging.info("Das Plugin wurde aktiviert.");
     }
@@ -133,6 +126,11 @@ public final class KnockFFA extends JavaPlugin {
             getDB().getConnection().close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        for (MapHandler mapHandler : MapCommand.maps) {
+            if (mapHandler.isFinished())
+                Bukkit.unloadWorld(mapHandler.getWorldString(), false);
         }
 
         Logging.info("Plugin disabled.");

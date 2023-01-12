@@ -6,14 +6,15 @@ import de.kevin.knockffa.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
 public class MapCommand implements CommandExecutor {
 
@@ -24,7 +25,7 @@ public class MapCommand implements CommandExecutor {
 
     public MapCommand(KnockFFA knockFFA) {
         this.knockFFA = knockFFA;
-        maps = loadMaps(knockFFA);
+        maps = MapHandler.MapSetter.maps;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class MapCommand implements CommandExecutor {
         if (args.length == 1) {
             // /map load
             if (args[0].equalsIgnoreCase("load")) {
-                loadMaps(knockFFA);
+                MapHandler.MapSetter.loadMaps(knockFFA);
                 Utils.sendMessage(p, true, "§aMaps geladen.");
                 p.performCommand("map list");
                 return true;
@@ -96,10 +97,15 @@ public class MapCommand implements CommandExecutor {
                 }
             }
 
+            if (args[0].equalsIgnoreCase("change")) {
+                if (MapHandler.MapSetter.mapExists(args[1])) {
+                    MapHandler.MapSetter.changeMap(MapHandler.MapSetter.getMap(args[1]));
+                }
+            }
 
             if (args[0].equalsIgnoreCase("create")) {
-                if (!mapExists(args[1])) {
-                    addMap(args[1]);
+                if (!MapHandler.MapSetter.mapExists(args[1])) {
+                    MapHandler.MapSetter.addMap(args[1]);
                     Utils.sendMessage(p, true, "§aMap wurde erstellt.");
                 } else
                     Utils.sendMessage(p, true, "§cMap existiert bereits!");
@@ -107,8 +113,8 @@ public class MapCommand implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("info")) {
-                if (mapExists(args[1])) {
-                    MapHandler tmp = getMap(args[1]);
+                if (MapHandler.MapSetter.mapExists(args[1])) {
+                    MapHandler tmp = MapHandler.MapSetter.getMap(args[1]);
                     Utils.sendMessage(p, true, "§eMap Informationen:");
                     tmp.getConfiguration().getValues(true).forEach((s1, o) -> p.sendMessage("§e" + s1 + " - " + o.toString()));
                 } else
@@ -117,7 +123,7 @@ public class MapCommand implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("setup")) {
-                if (mapExists(args[1])) {
+                if (MapHandler.MapSetter.mapExists(args[1])) {
                     if (!isEditing(p)) {
                         maps.stream().filter(mapHandler1 -> mapHandler1.getMap().equalsIgnoreCase(args[1])).findFirst().ifPresent(mapHandler -> {
                             setEditing(p, mapHandler, true);
@@ -180,38 +186,6 @@ public class MapCommand implements CommandExecutor {
         }
 
         return true;
-    }
-
-
-    public static List<MapHandler> loadMaps(KnockFFA knockFFA) {
-        List<MapHandler> l = new ArrayList<>();
-        File mapsFolder = new File(knockFFA.getDataFolder() + "/maps/");
-        if (!mapsFolder.exists())
-            //noinspection ResultOfMethodCallIgnored
-            mapsFolder.mkdirs();
-
-        for (File mapFile : Objects.requireNonNull(mapsFolder.listFiles((dir, name) -> name.endsWith(".mapconfig")))) {
-            MapHandler map = new MapHandler(knockFFA, mapFile.getName().replace(".mapconfig", ""));
-            map.loadAll();
-            l.add(map);
-        }
-
-        return maps = l;
-    }
-
-    public void addMap(String map) {
-        MapHandler mapHandler = new MapHandler(knockFFA, map);
-        mapHandler.createMapFile();
-        mapHandler.save();
-        maps.add(mapHandler);
-    }
-
-    public boolean mapExists(String map) {
-        return maps.stream().anyMatch(mapHandler -> mapHandler.getMap().equalsIgnoreCase(map));
-    }
-
-    public MapHandler getMap(String map) {
-        return maps.stream().filter(mapHandler -> mapHandler.getMap().equalsIgnoreCase(map)).findFirst().get();
     }
 
     public static HashMap<MapHandler, Player> getEditingPlayers() {
