@@ -12,10 +12,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MapHandler {
 
@@ -198,8 +195,10 @@ public class MapHandler {
         public static List<MapHandler> maps = new ArrayList<>();
         private static KnockFFA knockFFA;
         public static boolean isVoting = false;
+        public static boolean isPaused = false;
         private static BukkitTask mapChangeTask;
-        private static HashMap<Player, MapHandler> votes = new HashMap<>();
+        private static final List<BukkitTask> tasks = new ArrayList<>();
+        private static final HashMap<Player, MapHandler> votes = new HashMap<>();
 
         public static void initialize(KnockFFA knockFFA) {
             MapSetter.knockFFA = knockFFA;
@@ -218,19 +217,42 @@ public class MapHandler {
             mapChangeTask = Bukkit.getScheduler().runTaskTimer(knockFFA, new Runnable() {
                 @Override
                 public void run() {
-                    votes.clear();
-                    isVoting = true;
-                    Utils.broadcast(true, "§eVoting beginnt (30 Sekunden). Klicke zum abstimmen auf die Mapnamen (1 Vote möglich).");
-                    for (MapHandler mapHandler : maps) {
-                        Utils.sendVoteCommand(mapHandler);
-                    }
-
-                    Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 20 Sekunden..."), 20 * 10);
-                    Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 10 Sekunden..."), 20 * 20);
-                    Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 5 Sekunden..."), 20 * 25);
-                    Bukkit.getScheduler().runTaskLater(knockFFA, MapSetter::endVoting, 20 * 30);
+                    if (!isPaused())
+                        startVoting();
                 }
-            },20 * 10 /* * 5*/, 20 * 35);
+            },20 * 60 * 5, 20 * 60 * 5);
+        }
+
+        public static void stopVotingTimer() {
+            tasks.forEach(BukkitTask::cancel);
+            mapChangeTask.cancel();
+        }
+
+        public static void startVoting() {
+            votes.clear();
+            tasks.clear();
+            isVoting = true;
+            Utils.broadcast(true, "§eVoting beginnt (30 Sekunden). Klicke zum abstimmen auf die Mapnamen (1 Vote möglich).");
+            for (MapHandler mapHandler : shuffle(5)) {
+                Utils.sendVoteCommand(mapHandler);
+            }
+
+            tasks.add(Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 20 Sekunden..."), 20 * 10));
+            tasks.add(Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 10 Sekunden..."), 20 * 20));
+            tasks.add(Bukkit.getScheduler().runTaskLater(knockFFA, () -> Utils.broadcast(true, "§eVoting endet in 5 Sekunden..."), 20 * 25));
+            tasks.add(Bukkit.getScheduler().runTaskLater(knockFFA, MapSetter::endVoting, 20 * 30));
+        }
+
+        public static boolean isPaused() {
+            return isPaused;
+        }
+
+        public static void setPaused(boolean paused) {
+            isPaused = paused;
+            if (isPaused())
+                stopVotingTimer();
+            else
+                startVotingTimer();
         }
 
         public static void endVoting() {
@@ -249,6 +271,7 @@ public class MapHandler {
                 //noinspection OptionalGetWithoutIsPresent
                 changeMap(votings.entrySet().stream().filter((entry) -> entry.getValue() == highestVote).findAny().get().getKey());
             }
+            Utils.broadcast(true, "§eDas Voting ist beendet.");
         }
 
         public static boolean hasVoted(Player p) {
@@ -266,7 +289,7 @@ public class MapHandler {
 
             for (Player p : Bukkit.getOnlinePlayers()) {
                 p.teleport(activeMap.getSpawn());
-                Utils.sendTitle(p, "§7§kww§6§l " + activeMap.getMapName() + " §7§kww", "§7- §9Mapwechsel §7-", 20, 20*3, 20*2);
+                Utils.sendTitle(p, "§7§kww§r§6§l " + activeMap.getMapName() + " §7§kww", "§7- §9Mapwechsel §7-", 20, 20*3, 20*2);
             }
         }
 
@@ -305,6 +328,17 @@ public class MapHandler {
         public static MapHandler getMapByName(String map) {
             //noinspection OptionalGetWithoutIsPresent
             return maps.stream().filter(mapHandler -> mapHandler.getMapName().equalsIgnoreCase(map)).findFirst().get();
+        }
+
+        public static List<MapHandler> shuffle(int number) {
+            List<MapHandler> list = new ArrayList<>();
+            List<MapHandler> temp = new ArrayList<>(maps);
+            Collections.shuffle(temp);
+            for (int i = 0; i < number; i++) {
+                if (temp.size() == i) break;
+                list.add(temp.get(i));
+            }
+            return list;
         }
 
         @EventHandler

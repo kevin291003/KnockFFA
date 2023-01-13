@@ -5,10 +5,7 @@ import de.kevin.knockffa.database.Database;
 import de.kevin.knockffa.events.GamePlayEvents;
 import de.kevin.knockffa.events.Leave;
 import de.kevin.knockffa.events.RegisterUser;
-import de.kevin.knockffa.inventory.CommandsInventoryHandler;
-import de.kevin.knockffa.inventory.KitInventoryHandler;
-import de.kevin.knockffa.inventory.StartInventoryHandler;
-import de.kevin.knockffa.inventory.Top10InventoryHandler;
+import de.kevin.knockffa.inventory.*;
 import de.kevin.knockffa.webserver.KnockFFAWebserver;
 import de.kevin.websocket.ServerSocketThread;
 import org.bukkit.Bukkit;
@@ -80,8 +77,12 @@ public final class KnockFFA extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CommandsInventoryHandler(this), this);
         getServer().getPluginManager().registerEvents(new Top10InventoryHandler(this), this);
         getServer().getPluginManager().registerEvents(new KitInventoryHandler(this), this);
+        getServer().getPluginManager().registerEvents(new VotingInventoryHandler(this), this);
+        getServer().getPluginManager().registerEvents(new VotingChangeInventoryHandler(this), this);
 
         getServer().getPluginManager().registerEvents(new MapHandler.MapSetter(), this);
+
+
         command("top10", "", new Top10Command(this));
         command("title", "<text...>", new TitleCommand());
         command("knockffa", "", new FFACommand());
@@ -102,6 +103,8 @@ public final class KnockFFA extends JavaPlugin {
         }, 5);
 
         MapHandler.MapSetter.initialize(this);
+
+        Bukkit.getOnlinePlayers().forEach(player -> KitInventoryHandler.setKit(player, "Standard"));
 
         Logging.info("Das Plugin wurde aktiviert.");
     }

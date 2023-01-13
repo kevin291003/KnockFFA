@@ -3,10 +3,8 @@ package de.kevin.knockffa.events;
 import de.kevin.knockffa.KnockFFA;
 import de.kevin.knockffa.MapHandler;
 import de.kevin.knockffa.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +15,9 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GamePlayEvents implements Listener {
 
@@ -29,6 +30,8 @@ public class GamePlayEvents implements Listener {
     public GamePlayEvents(KnockFFA knockFFA) {
         this.knockFFA = knockFFA;
     }
+
+    public static List<Block> placedBlocks = new ArrayList<>();
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent e) {
@@ -224,8 +227,23 @@ public class GamePlayEvents implements Listener {
     @EventHandler
     public void onBlock(BlockPlaceEvent e) {
         if (!knockFFA.gameplay) return;
-        if (!e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || ! e.getPlayer().getGameMode().equals(GameMode.SURVIVAL))
+        if (e.getPlayer().getGameMode().equals(GameMode.CREATIVE) == e.getPlayer().getGameMode().equals(GameMode.SURVIVAL))
             e.setCancelled(true);
+        if (e.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+            placedBlocks.add(e.getBlockPlaced());
+            Bukkit.getScheduler().runTaskLater(knockFFA, new Runnable() {
+                @Override
+                public void run() {
+                    e.getBlockPlaced().setType(Material.RED_SANDSTONE);
+                    Bukkit.getScheduler().runTaskLater(knockFFA, new Runnable() {
+                        @Override
+                        public void run() {
+                            e.getBlockPlaced().setType(Material.AIR); // TODO: Last Seen
+                        }
+                    }, 20 * 2);
+                }
+            }, 20 * 4);
+        }
     }
 
     @EventHandler

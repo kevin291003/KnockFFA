@@ -116,9 +116,8 @@ public class KitInventoryHandler implements Listener {
         p.setMetadata("active_kit", new FixedMetadataValue(knockFFA, kit));
     }
 
-    public void getKit(Player p) {
-        String kit = p.getMetadata("active_kit").get(0).asString();
-        Utils.broadcast(true, kit);
+    public String getKit(Player p) {
+        return p.getMetadata("active_kit").get(0).asString();
     }
 
     @EventHandler

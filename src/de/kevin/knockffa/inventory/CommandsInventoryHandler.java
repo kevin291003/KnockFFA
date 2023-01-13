@@ -19,6 +19,7 @@ public class CommandsInventoryHandler implements Listener {
     public static class CommandItems {
 
         public static ItemStack Top10;
+        public static ItemStack Voting;
 
     }
 
@@ -28,12 +29,16 @@ public class CommandsInventoryHandler implements Listener {
 
     static final String TITLE = "§6KnockFFA §7-> §eBefehle";
 
-    public static Inventory createInventory() {
-        inventory = InventoryHelper.createInventory(TITLE, 4, true);
+    public static Inventory createInventory(Player holder) {
+        inventory = InventoryHelper.createInventory(holder, TITLE, 4, true);
 
         inventory.setItem(4, createItem(Material.COMMAND, 0, 1, "§e§l§nBefehle"));
 
         inventory.setItem(11, CommandItems.Top10 = createItem(Material.STICK, 0, 1, "§e§l/top10"));
+
+        if (holder.hasPermission("knockffa.map.voting.see")) {
+            inventory.setItem(inventory.getSize() - 1, CommandItems.Voting = createItem(Material.PAPER, 0, 1, "§e§lVoting"));
+        }
 
         return getInventory();
     }
@@ -58,6 +63,10 @@ public class CommandsInventoryHandler implements Listener {
         if (item.equals(CommandItems.Top10)) {
             p.closeInventory();
             p.performCommand("top10");
+        }
+        if (item.equals(CommandItems.Voting)) {
+            p.closeInventory();
+            p.openInventory(VotingInventoryHandler.createInventory(p));
         }
 
         // TODO: Handle other clicks

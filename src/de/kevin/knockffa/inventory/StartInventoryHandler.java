@@ -51,7 +51,7 @@ public class StartInventoryHandler implements Listener {
             return;
         }
         if (item.equals(CHOICE_COMMANDS)) {
-            p.openInventory(CommandsInventoryHandler.createInventory());
+            p.openInventory(CommandsInventoryHandler.createInventory(p));
             return;
         }
         if (item.equals(CHOICE_KITS)) {
