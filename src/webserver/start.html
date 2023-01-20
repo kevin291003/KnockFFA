@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KnockFFA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</head>
+<style>
+  body {
+    --screen-y=100vh;
+    background-color: #ffcfaa;
+  }
+</style>
+<body>
+<style>
+#main_container {
+  background-image: url('https://minecraft-server.eu/data/1/server/21E3D/e2a50ae1914021f96464b6b89b51b1a0.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+
+#main_container > .row {
+  min-height: 95vh;
+  backdrop-filter: blur(2px);
+}
+
+@media (min-width: 600px) {
+  #main_container > .row {
+    min-height: 100vh;
+  }
+}
+
+.flex-fill {
+  flex: 1 1 auto;
+}
+
+.btn {
+  background-color: #ffcfaa;
+}
+.btn:hover {
+  background-color: #ffcfaa64;
+}
+.h-100 > h1 {
+  font-size: calc(10rem + 1.5vw);
+}
+@media (min-width: 1200px) {
+  .h-100 > h1 {
+    font-size: 10rem;
+  }
+}
+.h-100 > h5 {
+  font-size: calc(4rem + 1.5vw);
+}
+@media (min-width: 1200px) {
+  .h-100 > h5 {
+    font-size: 4rem;
+  }
+}
+.h-100 > div {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+.h-100 a {
+  font-size: calc(2rem + 1.5vw);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+@media (min-width: 1200px) {
+  .h-100 a {
+    font-size: 2rem;
+  }
+}
+</style>
+<div id="main_container" class="container-fluid d-flex text-center align-items-center">
+  <div class="row flex-fill align-items-center">
+    <div class="h-100" style="color: #ffcaaa;background-color: #00000026;">
+      <h1 style="fonnt-size:10rem;"><strong>KnockFFA</strong></h1>
+      <h5 style="fonnt-size:4rem; font-weight: 100;">dein KnockFFA Plugin</h5>
+      <div class="container-fluid">
+        <a class="btn w-25" href="/?show=users&">Benutzer</a>
+        <a class="btn w-25" href="/?show=top10&">Top10</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

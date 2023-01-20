@@ -7,9 +7,9 @@ import de.kevin.knockffa.events.Leave;
 import de.kevin.knockffa.events.RegisterUser;
 import de.kevin.knockffa.inventory.*;
 import de.kevin.knockffa.webserver.KnockFFAWebserver;
-import de.kevin.websocket.ServerSocketThread;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -17,11 +17,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * The type Knock ffa.
+ * Main class of plugin KnockFFA
  */
 public final class KnockFFA extends JavaPlugin {
-
-    public boolean gameplay = false;
 
     /**
      * Use this to get the main class
@@ -32,6 +30,9 @@ public final class KnockFFA extends JavaPlugin {
         return knockFFA;
     }
 
+    /**
+     * @param knockFFA Instance of main class
+     */
     private void setKnockFFA(KnockFFA knockFFA) {
         this.knockFFA = knockFFA;
     }
@@ -41,11 +42,11 @@ public final class KnockFFA extends JavaPlugin {
 
     private ConfigHandler configHandler;
 
-    private ServerSocketThread serverSocketThread;
     public Database getDB() {
         return database;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static String getPrefix() {
         return "§7§l[§6§lKnockFFA§7§l] §r";
     }
@@ -59,6 +60,10 @@ public final class KnockFFA extends JavaPlugin {
         Logging.knockFFA = getKnockFFA();
 
         configHandler = new ConfigHandler(this,"config.yml");
+        prepareSettings();
+
+
+        Message.Message(this, configHandler.getConfiguration().getString("language"));
 
         //noinspection ResultOfMethodCallIgnored
         getDataFolder().mkdirs();
@@ -69,9 +74,11 @@ public final class KnockFFA extends JavaPlugin {
 
         createWebserverFiles();
 
+        // Events
         getServer().getPluginManager().registerEvents(new RegisterUser(this), this);
-        getServer().getPluginManager().registerEvents(new Leave(this), this);
+        getServer().getPluginManager().registerEvents(new Leave(), this);
         getServer().getPluginManager().registerEvents(new GamePlayEvents(this), this);
+
         // Inventare
         getServer().getPluginManager().registerEvents(new StartInventoryHandler(), this);
         getServer().getPluginManager().registerEvents(new CommandsInventoryHandler(this), this);
@@ -80,33 +87,46 @@ public final class KnockFFA extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VotingInventoryHandler(this), this);
         getServer().getPluginManager().registerEvents(new VotingChangeInventoryHandler(this), this);
 
+        // GamePlay/MapSetter
         getServer().getPluginManager().registerEvents(new MapHandler.MapSetter(), this);
 
 
         command("top10", "", new Top10Command(this));
-        command("title", "<text...>", new TitleCommand());
+        command("stats", "", new StatsCommand(this));
         command("knockffa", "", new FFACommand());
-        command("map", "", new MapCommand(knockFFA));
+        command("map", "", new MapCommand(this));
         command("mapvote", "<map name>", new MapVoteCommand());
 
 
-        Logging.info("Starte Webserver...");
+        Logging.info("Starting Webserver...");
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            int port = 0;
+            int port;
             try {
                 port = configHandler.getConfiguration().getInt("webserver-port");
                 webserver = new KnockFFAWebserver(knockFFA);
                 webserver.start(port);
             } catch (IOException e) {
-                Logging.warning("Der gewünschte Port ist nicht verfügbar. Suche nach freien Port...");
+                Logging.warning("The selected port is not available.");
             }
         }, 5);
 
         MapHandler.MapSetter.initialize(this);
 
-        Bukkit.getOnlinePlayers().forEach(player -> KitInventoryHandler.setKit(player, "Standard"));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            KitInventoryHandler.setKit(player, "Standard");
+        });
 
-        Logging.info("Das Plugin wurde aktiviert.");
+        GamePlay.setKnockFFA(this);
+        GamePlay.EventHandling();
+
+
+        Logging.info(getDescription().getName() + " v" + getDescription().getVersion() + " activated.");
+    }
+
+    private void prepareSettings() {
+        Configuration c = configHandler.getConfiguration();
+        Settings.MinPlayerForVoting = c.getInt("players_for_voting");
+        Settings.CustomChat = c.getBoolean("custom_chatformat");
     }
 
     private void createWebserverFiles() {
@@ -136,13 +156,32 @@ public final class KnockFFA extends JavaPlugin {
                 Bukkit.unloadWorld(mapHandler.getWorldString(), false);
         }
 
-        Logging.info("Plugin disabled.");
+        Logging.info(getDescription().getName() + " disabled.");
     }
 
     private void command(String command, String args, CommandExecutor cmdClass) {
         getCommand(command).setPermission("knockffa.command." + command);
-        getCommand(command).setPermissionMessage(getPrefix() + "§cDu hast keine Berechtigung!");
+        getCommand(command).setPermissionMessage(getPrefix() + Message.getMessage("commands.no_permission"));
         getCommand(command).setUsage(getPrefix() + "§c/<command> " + args);
         getCommand(command).setExecutor(cmdClass);
     }
+
+    public static class Settings {
+
+
+        /**
+         * Option of custom chat formatting and coloring
+         */
+        public static boolean CustomChat = false;
+
+        public static boolean GamePlay = false;
+
+        public static int MinPlayerForVoting = 3;
+
+        public void doc() {
+
+        }
+
+    }
+
 }

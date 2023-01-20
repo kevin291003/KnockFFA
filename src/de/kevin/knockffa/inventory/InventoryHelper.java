@@ -2,6 +2,7 @@ package de.kevin.knockffa.inventory;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import de.kevin.knockffa.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.UUID;
@@ -42,7 +42,7 @@ public class InventoryHelper {
     }
 
     public static ItemStack getBack() {
-        return createTexturedSkull(HEADS.ARROW_LEFT, "§7§lStartseite", 1);
+        return createTexturedSkull(HEADS.ARROW_LEFT, Message.getMessage("inventories.back_to_menu"), 1);
     }
 
     public static boolean isBack(ItemStack itm) {

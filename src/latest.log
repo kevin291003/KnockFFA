@@ -157,3 +157,22 @@
 [05.01.2023 01:09:56] INFO: Webserver erreichbar unter: http://LAPTOP-KVOIGT:12345
 [05.01.2023 01:11:17] DEBUG: Webserver gestartet.
 [05.01.2023 01:11:17] INFO: Webserver erreichbar unter: http://LAPTOP-KVOIGT:12345
+[17.01.2023 09:13:38] INFO: Database: Connected.
+[17.01.2023 09:14:00] INFO: Database: Connected.
+[17.01.2023 09:14:00] DEBUG: Webserver started.
+[17.01.2023 09:14:00] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344
+[17.01.2023 09:56:08] INFO: Database: Connected.
+[17.01.2023 09:56:09] DEBUG: Webserver started.
+[17.01.2023 09:56:09] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344
+[17.01.2023 10:17:28] INFO: Database: Connected.
+[17.01.2023 10:17:29] DEBUG: Webserver started.
+[17.01.2023 10:17:29] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344
+[18.01.2023 09:11:45] INFO: Database: Connected.
+[18.01.2023 09:11:45] DEBUG: Webserver started.
+[18.01.2023 09:11:45] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344
+[18.01.2023 09:13:18] INFO: Database: Connected.
+[18.01.2023 09:13:19] DEBUG: Webserver started.
+[18.01.2023 09:13:19] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344
+[18.01.2023 09:18:53] INFO: Database: Connected.
+[18.01.2023 09:18:54] DEBUG: Webserver started.
+[18.01.2023 09:18:54] INFO: Webserver located at: http://LAPTOP-KVOIGT.mshome.net:12344

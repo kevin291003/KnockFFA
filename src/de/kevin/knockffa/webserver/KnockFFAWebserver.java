@@ -1,7 +1,8 @@
 package de.kevin.knockffa.webserver;
 
-import com.sun.net.httpserver.*;
-import de.kevin.knockffa.Developing;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import de.kevin.knockffa.KnockFFA;
 import de.kevin.knockffa.Logging;
 
@@ -14,7 +15,7 @@ import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.HashMap;
 
 public class KnockFFAWebserver {
 
@@ -34,14 +35,15 @@ public class KnockFFAWebserver {
         rootContext.setHandler(this::handleRoot);
 
         httpServer.start();
-        Logging.debug("Webserver gestartet.");
-        Logging.info("Webserver erreichbar unter: http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + httpServer.getAddress().getPort());
+        Logging.debug("Webserver started.");
+        Logging.info("Webserver located at: http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + httpServer.getAddress().getPort());
     }
 
     public void stop() {
+        if (httpServer == null) return;
         httpServer.removeContext(rootContext);
         httpServer.stop(0);
-        Logging.debug("Webserver gestoppt.");
+        Logging.debug("Webserver stopped.");
     }
 
     public void handleRoot(HttpExchange exchange) throws IOException {
@@ -59,24 +61,23 @@ public class KnockFFAWebserver {
             String[] tmp = s.split("=");
             map.put(tmp[0], tmp.length > 1 ? tmp[1] : "NULL");
         }
+        response = error("The plugin is not correctly loaded.");
 
         if (map.containsKey("show")) {
             // --- Sites ---
             // Home
             if (map.get("show").equals("start"))
-                response = getHTML("index.html");
+                //response = getHTML("start.html");
+                response = fetchHTML("{FILE_CONTENTS}", "start.html");
 
             if (map.get("show").equals("users")) {
                 String answerHTML = getHTML("users.html");
                 StringBuilder users = new StringBuilder();
-                Statement s;
+
                 try {
-                    if (knockFFA != null) {
-                        s = knockFFA.getDB().getConnection().createStatement();
-                    } else {
-                        s = Developing.getDB().getConnection().createStatement();
-                    }
-                    s.execute("SELECT u.uuid AS uuid, u.username AS username, s.score AS score FROM users AS u, scores AS s WHERE u.uuid=s.uuid ORDER BY username ASC;");
+                    Statement s = knockFFA.getDB().getConnection().createStatement();
+
+                    s.execute("SELECT u.uuid AS uuid, u.username AS username, s.score AS score FROM users AS u, stats AS s WHERE u.uuid=s.uuid ORDER BY username ASC;");
                     ResultSet rs = s.getResultSet();
                     while (rs.next()) {
                         users.append("<tr onclick=\"window.location='/?show=user&uuid={USER_UUID}'\"><td>"
@@ -100,18 +101,15 @@ public class KnockFFAWebserver {
                 String answerHTML = getHTML("user.html");
                 String uuid = map.get("uuid") != null ? map.get("uuid") : "NULL", username = map.get("name") != null ? map.get("name") : "NULL";
                 int kills = 0, deaths = 0, score = 0, coins = 0;
-                Statement s;
+
                 try {
-                    if (knockFFA != null) {
-                        s = knockFFA.getDB().getConnection().createStatement();
-                    } else {
-                        s = Developing.getDB().getConnection().createStatement();
-                    }
+                    Statement s = knockFFA.getDB().getConnection().createStatement();
+
                     if (username == null || username.equals("NULL")) {
                         username = "NULL";
-                        s.execute("SELECT u.username, s.kills, s.deaths, s.coins, s.score FROM users AS u, scores AS s WHERE u.uuid='" + uuid + "' AND s.uuid='" + uuid + "';");
+                        s.execute("SELECT u.username, s.kills, s.deaths, s.coins, s.score FROM users AS u, stats AS s WHERE u.uuid='" + uuid + "' AND s.uuid='" + uuid + "';");
                     } else
-                        s.execute("SELECT u.username, s.kills, s.deaths, s.coins, s.score FROM users AS u, scores AS s WHERE u.username='" + username + "' AND u.uuid=s.uuid;");
+                        s.execute("SELECT u.username, s.kills, s.deaths, s.coins, s.score FROM users AS u, stats AS s WHERE u.username='" + username + "' AND u.uuid=s.uuid;");
                     ResultSet rs = s.getResultSet();
                     if (rs.next()) {
                         username = rs.getString("username");
@@ -136,14 +134,11 @@ public class KnockFFAWebserver {
                 String answerHTML = getHTML("top10.html");
 
                 StringBuilder users = new StringBuilder();
-                Statement s;
+
                 try {
-                    if (knockFFA != null) {
-                        s = knockFFA.getDB().getConnection().createStatement();
-                    } else {
-                        s = Developing.getDB().getConnection().createStatement();
-                    }
-                    s.execute("SELECT u.username AS username, u.uuid AS uuid, s.score AS score FROM scores AS s INNER JOIN users AS u WHERE u.uuid=s.uuid AND s.score > 0 ORDER BY score DESC LIMIT 10;");
+                    Statement s = knockFFA.getDB().getConnection().createStatement();
+
+                    s.execute("SELECT u.username AS username, u.uuid AS uuid, s.score AS score FROM stats AS s INNER JOIN users AS u WHERE u.uuid=s.uuid AND s.score > 0 ORDER BY score DESC LIMIT 10;");
                     ResultSet rs = s.getResultSet();
                     int i = 1;
                     while (rs.next()) {
@@ -183,7 +178,7 @@ public class KnockFFAWebserver {
             fileReader = new FileReader(knockFFA.getDataFolder() + "/webserver/" + fileName);
         else
             fileReader = new FileReader("src/webserver/" + fileName);
-        int i = 0;
+        int i;
 
         while ( (i = fileReader.read()) != -1 ) {
             htmlBuilder.append((char) i);
@@ -199,7 +194,7 @@ public class KnockFFAWebserver {
             fileReader = new FileReader(knockFFA.getDataFolder() + "/webserver/" + fileNameMain);
         else
             fileReader = new FileReader("src/webserver/" + fileNameMain);
-        int i = 0;
+        int i;
 
         while ( (i = fileReader.read()) != -1 ) {
             htmlBuilder.append((char) i);
@@ -209,10 +204,18 @@ public class KnockFFAWebserver {
 
     String error(Exception e) {
         try {
-            return getHTML("error.html").replace("{ERROR}", e.getMessage());
+            return getHTML("error.html").replace("{ERROR}", e.getLocalizedMessage());
         } catch (IOException ignored) {
         }
         return "ERROR<br>" + e.getLocalizedMessage();
+    }
+
+    String error(String message) {
+        try {
+            return getHTML("error.html").replace("{ERROR}", message).replace("{ERROR_MESSAGE}", "");
+        } catch (IOException ignored) {
+        }
+        return "ERROR";
     }
 
 }

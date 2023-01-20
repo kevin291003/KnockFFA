@@ -2,13 +2,13 @@ package de.kevin.knockffa.inventory;
 
 import de.kevin.knockffa.KnockFFA;
 import de.kevin.knockffa.MapHandler;
+import de.kevin.knockffa.Message;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -24,13 +24,13 @@ public class VotingChangeInventoryHandler implements Listener {
         VotingChangeInventoryHandler.knockFFA = knockFFA;
     }
 
-    static final String TITLE = "§6KnockFFA §7-> §eMapwechsel";
+    static final String TITLE = "§6KnockFFA §7-> " + Message.getMessage("inventories.mapchange.title");
 
     public static Inventory createInventory(Player holder) {
         inventory = InventoryHelper.createInventory(TITLE, 4, true);
 
         inventory.setItem(0, getBack());
-        inventory.setItem(4, createItem(Material.PAPER, 0, 1, "§e§lMapwechsel"));
+        inventory.setItem(4, createItem(Material.PAPER, 0, 1, Message.getMessage("inventories.mapchange.item")));
 
         for (int i = 10; i < 26; i++) {
             if (i % 9 == 8) {
@@ -85,8 +85,4 @@ public class VotingChangeInventoryHandler implements Listener {
 
     }
 
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e) {
-
-    }
 }

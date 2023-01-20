@@ -1,26 +1,43 @@
 name: 'KnockFFA'
-version: '1.0'
+version: '2.1'
 main: 'de.kevin.knockffa.KnockFFA'
 prefix: 'KnockFFA'
 author: 'Kevin'
-description: 'Es ist ein FFA Spiel, in dem es darum geht, andere Spieler von der Map zu schubsen.'
+description: 'You are used to push others from the map.'
 
 commands:
   top10:
-  title:
+  stats:
   knockffa:
   map:
   mapvote:
 
 permissions:
+
+  ##### Preset permissions #####
   knockffa.preset.user:
     description: 'Standard user permissions'
     children:
-      knockffa.command.top10: false
-      knockffa.command.knockffa: false
+      knockffa.command.top10: true
+      knockffa.command.knockffa: true
+      knockffa.command.mapvote: true
+      knockffa.command.map: true
+
+  ##### Command Permissions #####
   knockffa.command.top10:
     description: 'Use the command /top10'
-  knockffa.command.title:
-    description: 'Use the command /title'
   knockffa.command.knockffa:
     description: 'Use the command /knockffa'
+  knockffa.command.map:
+    description: 'Use the command /map'
+    default: op
+  knockffa.command.mapvote:
+    description: 'Use the command /mapvote'
+
+  ##### Kit permissions #####
+  knockffa.kits.standard:
+    description: 'Access to kit Standard'
+    default: true
+  knockffa.kits.test:
+    description: 'Access to kit Test'
+    default: false

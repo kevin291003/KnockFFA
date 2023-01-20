@@ -1,2 +1,5 @@
 log-level: debug
 webserver-port: 12345
+language: 'english'
+players_for_voting: 3
+custom_chatformat: true

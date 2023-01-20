@@ -5,13 +5,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ConfigHandler {
 
-    private KnockFFA knockFFA;
-    private File configFile;
+    private final KnockFFA knockFFA;
+    private final File configFile;
     private FileConfiguration configuration;
 
     private KnockFFA getKnockFFA() {
@@ -24,7 +23,7 @@ public class ConfigHandler {
         createConfig(config);
     }
 
-    public void createConfig(String config) {
+    private void createConfig(String config) {
         if (!configFile.exists()) {
             //noinspection ResultOfMethodCallIgnored
             configFile.getParentFile().mkdirs();

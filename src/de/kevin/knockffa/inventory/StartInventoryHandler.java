@@ -1,11 +1,11 @@
 package de.kevin.knockffa.inventory;
 
+import de.kevin.knockffa.Message;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +14,7 @@ import static de.kevin.knockffa.inventory.InventoryHelper.*;
 public class StartInventoryHandler implements Listener {
 
     static Inventory inventory;
-    static final String TITLE = "§6KnockFFA §7-> §eStartseite";
+    static final String TITLE = "§6KnockFFA §7-> " + Message.getMessage("inventories.main.title");
     private static ItemStack CHOICE_TOP10;
     private static ItemStack CHOICE_COMMANDS;
     private static ItemStack CHOICE_KITS;
@@ -22,9 +22,9 @@ public class StartInventoryHandler implements Listener {
     public static Inventory createInventory() {
         inventory = InventoryHelper.createInventory(TITLE, 1, true);
 
-        inventory.setItem(2, CHOICE_COMMANDS = createItem(Material.COMMAND, 0 ,1, "§e§l§nBefehle", "§7Liste alle Befehle auf."));
-        inventory.setItem(4, CHOICE_TOP10 = createTexturedSkull(HEADS.TOP10, "§e§l§nTop 10", 1, "§7Zeige dir die Top 10", "§7Spieler aus KnockFFA an."));
-        inventory.setItem(6, CHOICE_KITS = createItem(Material.CHEST, 0, 1, "§e§l§nKlassen", "§7Wähle eine Klasse", "§7zum Kämpfen aus."));
+        inventory.setItem(2, CHOICE_COMMANDS = createItem(Material.COMMAND, 0 ,1, Message.getMessage("inventories.main.items.commands.item"), Message.getMessage("inventories.main.items.commands.info")));
+        inventory.setItem(4, CHOICE_TOP10 = createTexturedSkull(HEADS.TOP10, Message.getMessage("inventories.main.items.top10.item"), 1, Message.getMessage("inventories.main.items.top10.info1"), Message.getMessage("inventories.main.items.top10.info2")));
+        inventory.setItem(6, CHOICE_KITS = createItem(Material.CHEST, 0, 1, Message.getMessage("inventories.main.items.kits.item"), Message.getMessage("inventories.main.items.kits.info1"), Message.getMessage("inventories.main.items.kits.info2")));
 
         return getInventory();
     }
@@ -59,11 +59,6 @@ public class StartInventoryHandler implements Listener {
             return;
         }
         // TODO: Handle other clicks
-    }
-
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e) {
-
     }
 
 }

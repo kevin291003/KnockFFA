@@ -1,0 +1,8 @@
+# 'file' uses local database with path /plugins/KnockFFA/database.db ; 'mysql' uses mysql connection
+connection: 'file'
+mysql:
+  host: 'localhost'
+  port: 3306
+  database: 'knockffa'
+  user: 'username'
+  password: 'password'

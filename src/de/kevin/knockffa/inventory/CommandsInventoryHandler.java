@@ -1,12 +1,12 @@
 package de.kevin.knockffa.inventory;
 
 import de.kevin.knockffa.KnockFFA;
+import de.kevin.knockffa.Message;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,17 +27,17 @@ public class CommandsInventoryHandler implements Listener {
         CommandsInventoryHandler.knockFFA = knockFFA;
     }
 
-    static final String TITLE = "§6KnockFFA §7-> §eBefehle";
+    static final String TITLE = "§6KnockFFA §7-> " + Message.getMessage("inventories.commands.title");
 
     public static Inventory createInventory(Player holder) {
         inventory = InventoryHelper.createInventory(holder, TITLE, 4, true);
 
-        inventory.setItem(4, createItem(Material.COMMAND, 0, 1, "§e§l§nBefehle"));
+        inventory.setItem(4, createItem(Material.COMMAND, 0, 1, Message.getMessage("inventories.main.items.commands.item")));
 
-        inventory.setItem(11, CommandItems.Top10 = createItem(Material.STICK, 0, 1, "§e§l/top10"));
+        inventory.setItem(11, CommandItems.Top10 = createItem(Material.STICK, 0, 1, Message.getMessage("inventories.main.items.top10.item")));
 
         if (holder.hasPermission("knockffa.map.voting.see")) {
-            inventory.setItem(inventory.getSize() - 1, CommandItems.Voting = createItem(Material.PAPER, 0, 1, "§e§lVoting"));
+            inventory.setItem(inventory.getSize() - 1, CommandItems.Voting = createItem(Material.PAPER, 0, 1, Message.getMessage("inventories.commands.item_voting")));
         }
 
         return getInventory();
@@ -72,8 +72,4 @@ public class CommandsInventoryHandler implements Listener {
         // TODO: Handle other clicks
     }
 
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent e) {
-
-    }
 }

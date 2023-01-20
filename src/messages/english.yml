@@ -1,0 +1,121 @@
+join_subtitle: '&9Welcome'
+commands:
+  no_permission: '&cYou do not have permission!'
+  mapcommand:
+    maps_loaded: '&aMaps loaded.'
+    maps: '&e&nMaps:'
+    map_setup_finished: '&a&lYou have finished the setup and the map was saved.'
+    map_teleport: '&eTeleport...'
+    map_created: '&aMap was created.'
+    map_deleted: '&cMap was deleted.'
+    map_already_exists: '&cMap already exists!'
+    map_not_existing: '&cMap does not exist!'
+    map_now_editing: '&eYou now edit the map: {map}'
+    map_already_editing: '&cYou already edit the map {map}'
+    map_mark_finished: '&aYou have marked the map as finished.'
+    map_set_spawn: '&eThe spawn has been set.'
+    map_set_safezone: '&aThe safezone height has been set.'
+    map_set_deathzone: '&aThe deathzone height has been set.'
+    map_not_editing: '&cYou are not editing a map!'
+    map_set_name: '&aThe mapname is now set to {mapname}.'
+
+  mapvotecommand:
+    already_voted: '&cYou have voted already!'
+    no_voting: '&cThere is nothing to vote for!'
+    hover: '&aClick to vote.'
+
+  top10command:
+    first_line: '&e&nTop 10 of all points:'
+    no_data: '&cThere is no data of players.'
+
+  statscommand:
+    no_data: '&cThere is no data of {player}.'
+    stats: '&eStats of {player}:'
+    kills: '&eKills: {kills}'
+    deaths: '&eDeaths: {deaths}'
+    coins: '&eCoins: {coins}'
+    score: '&eScore: {score}'
+    rank: '&eRank: {rank}'
+
+events:
+  database_registered: "&6You have been registered in the database."
+  welcome_subtitle: 'Welcome'
+  death:
+    killer: '&9You have killed {killed}.'
+    killed_by_player: '&9You have been killed by {killer}.'
+    killed_other: '&9You died.'
+
+inventories:
+  back_to_menu: '&7&lStart'
+
+  main:
+    title: '&eStart'
+    items:
+      commands:
+        item: '&e&l&nCommands'
+        info: '&7List of all commands.'
+      top10:
+        item: '&e&l&nTop 10'
+        info1: '&7Shows the top 10'
+        info2: '&7players of KnockFFA.'
+      kits:
+        item: '&e&l&nKits'
+        info1: '&7Choose a class'
+        info2: '&7to fight.'
+
+  commands:
+    title: '&eCommands'
+    item_voting: '&e&l&nVoting'
+
+  kits:
+    kit_chosen: '&eClass chosen'
+    kit_not_buyed:
+      line1: '&cYou do not own this class.'
+      line2: '&cCost: {coins} Coins'
+      line3: '&cClick to buy.'
+    kit_choose: '&aChoose this class.'
+    title: '&eClasses'
+    kit1:
+      name: '&8Standard'
+    kit2:
+      name: '&8Test'
+
+  top10:
+    title: '&eTop 10'
+    user_score1: '&7Score:'
+    user_score2: '&7{score}'
+
+  mapchange:
+    title: '&eMapchange'
+    item: '&e&l&nMapchange'
+
+  voting:
+    title: '&eVoting'
+    item: '&e&l&nVoting'
+    items:
+      pause_voting: '&9Map Voting'
+      pause_voting_pause: '&cPause'
+      pause_voting_start: '&aContinue'
+      force_vote: '&eVoting'
+      force_map_change: '&eMapchange'
+    voting_start: '&aMap voting is continuing.'
+    voting_pause: '&cMap voting is paused.'
+
+voting:
+  started: '&eVoting has started (30 seconds). Click on map names to vote (1 vote possible).'
+  vote_20s: '&eVoting ends in 20 seconds...'
+  vote_10s: '&eVoting ends in 10 seconds...'
+  vote_5s: '&eVoting ends in 5 seconds...'
+  vote_end: '&eVoting has ended.'
+  vote_for: '&aYou have voted "{mapname}".'
+  not_votable: '&cYou cannot vote this map.'
+  subtitle_mapchange: '&9map is changing'
+
+gameevents:
+  kitevent:
+    start: '&aYou now have access to use the kit {kit}. 5 minutes left.'
+    start_title: '&7Event has started'
+    start_subtitle: '&7Access to kit {kit}'
+    end: '&4You do not have access to the kit {kit} anymore.'
+    end_title: '&7Event has ended'
+    end_subtitle: '&7You get your old kit back'
